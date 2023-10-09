@@ -38,8 +38,10 @@ __version__ = '1.2.4'
 ## Global files
 LOGFILE_NAME     = '/tmp/redirect_logfile'
 WORKINGFILE_NAME = '/tmp/redirect.rules'
+WORKINGNGINX_NAME = '/tmp/redirect_rules.conf'
 LOGFILE     = open(LOGFILE_NAME, 'w')
 WORKINGFILE = open(WORKINGFILE_NAME, 'w')
+WORKINGNGINXFILE = open(WORKINGNGINX_NAME, 'w')
 
 ## HTTP requests config
 HTTP_TIMEOUT = 10
@@ -49,6 +51,7 @@ HTTP_HEADERS = {
 
 ## De-dupe data storage
 FULL_IP_LIST    = []  # De-dupe ips
+FULL_FILTERED_IP_LIST = set() # De-dupe ips without sed'ing
 FULL_HOST_LIST  = []  # De-dupe hosts
 FULL_AGENT_LIST = []  # De-dupe agents
 
@@ -181,27 +184,8 @@ if __name__ == '__main__':
 
     #> ----------------------------------------------------------------------------
     # Initialize redirect.rules file
-    # Add header comments to the redirect.rules file headers
-    WORKINGFILE.write("\t#\n")
-    WORKINGFILE.write("\t# %s v%s to block AV Sandboxes - built: %s\n" % (__file__, __version__, datetime.now().strftime("%Y%m%d-%H:%M:%S")))
-    WORKINGFILE.write("\t#\n\n")
-
-    # Add updated/modified comments from @curi0usJack's .htaccess
-    WORKINGFILE.write("\t# Note: This currently requires Apache 2.4+\n")
-    WORKINGFILE.write("\t#\n")
-    WORKINGFILE.write("\t# Example Usage:\n")
-    WORKINGFILE.write("\t# Save file as /etc/apache2/redirect.rules\n")
-    WORKINGFILE.write("\t# Within your site's Apache conf file (in /etc/apache2/sites-avaiable/),\n")
-    WORKINGFILE.write("\t# put the following statement near the bottom:\n")
-    WORKINGFILE.write("\t# \tInclude /etc/apache2/redirect.rules\n")
-    WORKINGFILE.write("\t#\n\n")
-
-    # Add a note to the user to keep the protocol used when setting the redirect target
-    WORKINGFILE.write("\t#\n")
-    WORKINGFILE.write("\t# If modifying the 'REDIR_TARGET' value, please ensure to include the protocol\n")
-    WORKINGFILE.write("\t# e.g. https://google.com OR http://my.domain/test.txt\n")
-    WORKINGFILE.write("\t#\n")
-
+    WORKINGNGINXFILE.write(f'# Generated on {datetime.now().strftime("%Y:%m:%d")}\n')
+    WORKINGNGINXFILE.write("# with https://github.com/Fudgedotdotdot/redirect.rules, forked for nginx use from https://github.com/0xZDH/redirect.rules\n")
 
     #> -----------------------------------------------------------------------------
     # Write @curi0usJack's .htaccess rules: https://gist.github.com/curi0usJack/971385e8334e189d93a6cb4671238b10
@@ -218,13 +202,6 @@ if __name__ == '__main__':
             ]
         )
         (FULL_IP_LIST, FULL_AGENT_LIST) = source.process_data()
-
-    # If we skip @curi0usJack's file, we need to add a few lines...
-    else:
-        WORKINGFILE.write("\tDefine REDIR_TARGET %s\n\n" % args.destination)
-        WORKINGFILE.write("\tRewriteEngine On\n")
-        WORKINGFILE.write("\tRewriteOptions Inherit\n\n")
-
 
     #> -----------------------------------------------------------------------------
     # Add static User-Agent list
@@ -313,7 +290,6 @@ if __name__ == '__main__':
         )
         FULL_IP_LIST = source.process_data()
 
-
     #> -----------------------------------------------------------------------------
     # Add Microsoft Azure IPs: https://www.microsoft.com/en-us/download/confirmation.aspx?id=41653
     # __dynamic__
@@ -362,7 +338,6 @@ if __name__ == '__main__':
             ]
         )
         FULL_IP_LIST = source.process_data()
-
 
     #> -----------------------------------------------------------------------------
     # Add companies by ASN - via whois.radb.net
@@ -481,47 +456,6 @@ if __name__ == '__main__':
     #> -----------------------------------------------------------------------------
     # Rule clean up and file finalization
 
-    # Now that we have written the sink-hole rules, let's add some example rules for
-    # the user to reference/use for file/path handling and a catch-all redirection
-
-    # Handle redirection of a file/path to its final file/path destination
-    WORKINGFILE.write("\n\n\t# Redirect a file/path to a target backend file/path\n")
-    WORKINGFILE.write("\t# -> Example: Redirect displayed path to raw path to grab 'example.zip'\n")
-    WORKINGFILE.write("\t# -> Note: This should come after all IP/Host/User-Agent blacklisting\n\n")
-    WORKINGFILE.write("\t# RewriteRule\t\t\t\t^/test/files/example.zip(.*)$\t\t/example.zip\t[L,R=302]\n\n")
-
-    # Handle redirection for a file/path to another server
-    WORKINGFILE.write("\n\t# Redirect and proxy a file/path to another system's file/path\n")
-    WORKINGFILE.write("\t# -> Example: Redirect and proxy displayed path to another system via the same path\n")
-    WORKINGFILE.write("\t# -> Note: You can also specify the URI explicitly as needed\n")
-    WORKINGFILE.write("\t# -> Note: This should come after all IP/Host/User-Agent blacklisting\n\n")
-    WORKINGFILE.write("\t# RewriteRule\t\t\t\t^/test/files/example.zip(.*)$\t\thttps://192.168.10.10%{REQUEST_URI}\t[P]\n\n")
-
-    # Create a final, catch-all redirection
-    WORKINGFILE.write("\n\t# Catch-all redirect\n")
-    WORKINGFILE.write("\t# -> Example: Catch anything other than '/example.zip' and redirect\n")
-    WORKINGFILE.write("\t# -> Note: This should be the last item in the redirect.rules file as a final catch-all\n\n")
-    WORKINGFILE.write("\t# RewriteRule\t\t\t\t^((?!\\/example\\.zip).)*$\t\t${REDIR_TARGET}\t[L,R=302]\n")
-
-    print("\n[+]\tFile/Path redirection and catch-all examples commented at bottom of file.\n")
-
-    # Add a note at the end of the rules file of what was excluded...
-    if len(args.exclude) > 0:
-        WORKINGFILE.write("\n\n\t#\n")
-        if any(x in KEYWORDS or re.search('^AS',x) for x in args.exclude):
-            WORKINGFILE.write("\t# The following data groups were excluded:\n")
-            for item in args.exclude:
-                if item in KEYWORDS:
-                    WORKINGFILE.write("\t#\t%s\n" % item)
-
-        if any(x not in KEYWORDS for x in args.exclude):
-            WORKINGFILE.write("\n\t# The following explicit values were commented out:\n")
-            for item in args.exclude:
-                if item not in KEYWORDS:
-                    WORKINGFILE.write("\t#\t%s\n" % item)
-
-    WORKINGFILE.close()  # Close out working file before modding it via bash
-
     print("\n[*]\tPerforming rule de-duplication clean up...")
 
     # Let's build our CIDR map to identify redundant CIDRs
@@ -545,8 +479,7 @@ if __name__ == '__main__':
             min_cidr = min(tmp_cidr_list[net])
             for cidr in tmp_cidr_list[net]:
                 if cidr != min_cidr:
-                    net = re.sub('\.', '\\.', net)
-                    remove_list.append(net + '\\/' + str(cidr))
+                    remove_list.append(net + '/' + str(cidr))
 
     # Add IPs to remove
     for ip in tmp_ip_list:
@@ -579,16 +512,38 @@ if __name__ == '__main__':
     # Now let's comment out each CIDR
     # Clean remove list first (this was an issue at one point)
     remove_list = [x for x in remove_list if x.strip() != '']
-    for cidr in remove_list:
-        command = "sed -e '/%s/ s/^#*/#/' -i %s" % (cidr, WORKINGFILE_NAME)
-        result  = subprocess.check_output(command, shell=True)
+    #for cidr in remove_list:
+    #    command = "sed -e '/%s/ s/^#*/#/' -i %s" % (cidr, WORKINGFILE_NAME)
+    #    result  = subprocess.check_output(command, shell=True)
+    
+    for ip in FULL_IP_LIST:
+        if ip not in remove_list:
+            FULL_FILTERED_IP_LIST.add(ip)    
+    
+    tmp_calc_ip_set = set()
+    for full_ip in FULL_FILTERED_IP_LIST:
+        if "/" in full_ip:
+            ip, cidr = full_ip.split("/")
+            subnet = '.'.join([str((0xffffffff << (32 - int(cidr)) >> i) & 0xff) for i in [24, 16, 8, 0]])
+            tmp_calc_ip_set.add('.'.join(map(str, map(lambda x, y: x&y, map(int, ip.split(".")), map(int, subnet.split("."))))) + f"/{cidr}")
+    
+    FULL_FILTERED_IP_LIST = "\n".join(list(map(lambda i: "\t" + i + " 1 ;", tmp_calc_ip_set)))
+
+
+    WORKINGNGINXFILE.write("geo $block_ip {\n")
+    WORKINGNGINXFILE.write("\tdefault 0;\n")
+    WORKINGNGINXFILE.write(f"{FULL_FILTERED_IP_LIST}\n")
+    WORKINGNGINXFILE.write("}")
+    WORKINGNGINXFILE.close()
+    WORKINGFILE.close() # also close this, the file is used by sources
+
 
     # Use a little more bash for counting conditions created
-    command = 'grep -c "RewriteCond" %s | grep -v "#"' % WORKINGFILE_NAME
-    result  = subprocess.check_output(command, shell=True).decode('utf-8')
-    result  = int(result.strip())
-    print("\n[+]\tTotal IPs, Networks or User-Agents blocked: %d" % result)
-    print("[+]\tRedirect rules file: %s" % WORKINGFILE_NAME)
+    #command = 'grep -c "RewriteCond" %s | grep -v "#"' % WORKINGFILE_NAME
+    #result  = subprocess.check_output(command, shell=True).decode('utf-8')
+    #result  = int(result.strip())
+    #print("\n[+]\tTotal IPs, Networks or User-Agents blocked: %d" % result)
+    #print("[+]\tRedirect rules file: %s" % WORKINGFILE_NAME)
 
     elapsed = time.perf_counter() - start
     print(f"\n{__file__} executed in {elapsed:0.2f} seconds.")

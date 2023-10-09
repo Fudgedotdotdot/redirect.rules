@@ -1,0 +1,482 @@
+	#
+	# redirect_rules.py v1.2.4 to block AV Sandboxes - built: 20231009-14:10:44
+	#
+
+	# Note: This currently requires Apache 2.4+
+	#
+	# Example Usage:
+	# Save file as /etc/apache2/redirect.rules
+	# Within your site's Apache conf file (in /etc/apache2/sites-avaiable/),
+	# put the following statement near the bottom:
+	# 	Include /etc/apache2/redirect.rules
+	#
+
+	#
+	# If modifying the 'REDIR_TARGET' value, please ensure to include the protocol
+	# e.g. https://google.com OR http://my.domain/test.txt
+	#
+
+
+	# @curi0usJack .htaccess: 20231009-14:10:44
+	Define REDIR_TARGET https://example.ch
+	
+	RewriteEngine On
+	RewriteOptions Inherit
+	
+	# Uncomment the below line for verbose logging, including seeing which rule matched.
+	#LogLevel alert rewrite:trace5
+	
+	# BURN AV BURN
+	
+	# ForcePoint
+	RewriteCond				expr					"-R '208.80.192.0/21'"	[OR]
+	RewriteCond				expr					"-R '85.115.60.0/24'"	[OR]
+	RewriteCond				expr					"-R '208.87.232.0/24'"	[OR]
+	
+	# Domain Tools: @breakersall
+	RewriteCond				expr					"-R '199.30.228.0/22'"	[OR]
+	
+	# ZScaler
+	RewriteCond				expr					"-R '165.255.0.0/17'"	[OR]
+	RewriteCond				expr					"-R '104.129.204.0/24'"	[OR]
+	
+	# Other VT hosts
+	RewriteCond                             expr                                    "-R '173.94.0.0/16'" [OR]
+        RewriteCond                             expr                                    "-R '8.34.0.0/16'" [OR]
+        RewriteCond                             expr                                    "-R '8.35.0.0/16'" [OR]
+        RewriteCond                             expr                                    "-R '92.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '93.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '94.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '95.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '96.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '97.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '98.0.0.0/8'" [OR]
+        RewriteCond                             expr                                    "-R '99.0.0.0/8'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+	
+	# TrendMicro
+	RewriteCond				expr					"-R '150.70.0.0/22'"	[OR]
+	RewriteCond				expr					"-R '150.70.104.0/22'"	[OR]
+	RewriteCond				expr					"-R '150.70.110.0/24'"	[OR]
+	RewriteCond				expr					"-R '150.70.112.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.12.0/22'"	[OR]
+	RewriteCond				expr					"-R '150.70.160.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.176.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.192.0/21'"	[OR]
+	RewriteCond				expr					"-R '150.70.224.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.240.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.31.0/24'"	[OR]
+	RewriteCond				expr					"-R '150.70.4.0/22'"	[OR]
+	RewriteCond				expr					"-R '150.70.64.0/18'"	[OR]
+	RewriteCond				expr					"-R '150.70.64.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.8.0/22'"	[OR]
+	RewriteCond				expr					"-R '150.70.80.0/20'"	[OR]
+	RewriteCond				expr					"-R '150.70.96.0/20'"	[OR]
+	RewriteCond				expr					"-R '206.165.76.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	#BlueCoat: @breakersall
+	RewriteCond				expr					"-R '199.116.168.0/21'"	[OR]
+	RewriteCond				expr					"-R '66.93.208.240/28'"	[OR]
+	RewriteCond				expr					"-R '115.164.86.121'"	[OR]
+	
+	#URL Query: @breakersall
+	RewriteCond				expr					"-R '77.40.129.123'"	[OR]
+	RewriteCond				expr					"-R '95.183.244.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.239.28.127'"	[OR]
+	RewriteCond				expr					"-R '79.79.148.81'"	[OR]
+	RewriteCond				expr					"-R '104.131.157.171'"	[OR]
+	RewriteCond				expr					"-R '84.33.17.128/25'"	[OR]
+	RewriteCond				expr					"-R '199.254.238.0/24'"	[OR]
+	RewriteCond				expr					"-R '196.52.48.49'"	[OR]
+	RewriteCond				expr					"-R '89.38.150.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	#Palo Alto
+	RewriteCond				expr					"-R '154.59.123.0/24'"	[OR]
+	RewriteCond				expr					"-R '154.59.126.0/24'"	[OR]
+	RewriteCond				expr					"-R '199.167.52.0/24'"	[OR]
+	RewriteCond				expr					"-R '199.167.53.0/24'"	[OR]
+	RewriteCond				expr					"-R '199.167.55.0/24'"	[OR]
+	RewriteCond				expr					"-R '202.126.13.0/24'"	[OR]
+	RewriteCond				expr					"-R '202.189.133.0/24'"	[OR]
+	RewriteCond				expr					"-R '208.184.7.0/24'"	[OR]
+	RewriteCond				expr					"-R '64.74.215.0/24'"	[OR]
+	RewriteCond				expr					"-R '65.154.226.0/24'"	[OR]
+	RewriteCond				expr					"-R '70.42.131.0/24'"	[OR]
+	RewriteCond				expr					"-R '72.5.231.0/24'"	[OR]
+	RewriteCond				expr					"-R '72.5.65.0/24'"	[OR]
+	RewriteCond				expr					"-R '74.201.127.0/24'"	[OR]
+	RewriteCond				expr					"-R '74.217.90.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	#ProofPoint
+	RewriteCond				expr					"-R '148.163.148.0/22'"	[OR]
+	RewriteCond				expr					"-R '148.163.156.0/23'"	[OR]
+	RewriteCond				expr					"-R '208.84.65.0/24'"	[OR]
+	RewriteCond				expr					"-R '208.84.66.0/24'"	[OR]
+	RewriteCond				expr					"-R '208.86.202.0/24'"	[OR]
+	RewriteCond				expr					"-R '208.86.203.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.144.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.145.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.146.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.147.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.148.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.149.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.151.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.231.158.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	#MessageLabs
+	RewriteCond				expr					"-R '216.82.240.0/22'"	[OR]
+	RewriteCond				expr					"-R '198.6.44.0/23'"	[OR]
+	RewriteCond				expr					"-R '198.6.48.0/24'"	[OR]
+	RewriteCond				expr					"-R '216.82.240.0/22'"	[OR]
+	RewriteCond				expr					"-R '216.82.246.0/24'"	[OR]
+	RewriteCond				expr					"-R '216.82.248.0/22'"	[OR]
+	RewriteCond				expr					"-R '216.82.252.0/22'"	[OR]
+	RewriteCond				expr					"-R '216.82.253.0/22'"	[OR]
+	RewriteCond				expr					"-R '216.82.254.0/22'"	[OR]
+	RewriteCond				expr					"-R '63.245.192.0/23'"	[OR]
+	RewriteCond				expr					"-R '63.245.204.0/24'"	[OR]
+	RewriteCond				expr					"-R '63.245.205.0/24'"	[OR]
+	RewriteCond				expr					"-R '63.245.206.0/24'"	[OR]
+	RewriteCond				expr					"-R '65.197.254.0/24'"	[OR]
+	RewriteCond				expr					"-R '65.201.134.0/24'"	[OR]
+	RewriteCond				expr					"-R '67.219.240.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.242.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.244.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.246.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.248.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.250.0/23'"	[OR]
+	RewriteCond				expr					"-R '67.219.252.0/23'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+	
+	#Fortigate
+	RewriteCond				expr					"-R '173.243.128.0/20'"	[OR]
+	RewriteCond				expr					"-R '173.243.136.0/21'"	[OR]
+	RewriteCond				expr					"-R '208.91.112.0/22'"	[OR]
+	RewriteCond				expr					"-R '208.91.112.0/23'"	[OR]
+	RewriteCond				expr					"-R '208.91.114.0/23'"	[OR]
+	RewriteCond				expr					"-R '23.249.49.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.50.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.51.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.52.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.53.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.54.0/24'"	[OR]
+	RewriteCond				expr					"-R '23.249.55.0/24'"	[OR]
+	RewriteCond				expr					"-R '96.45.32.0/20'"	[OR]
+	RewriteCond				expr					"-R '96.45.32.0/21'"	[OR]
+	RewriteCond				expr					"-R '96.45.40.0/21'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	#Symantec
+	RewriteCond				expr					"-R '95.45.252.0/29'"	[OR]
+	RewriteCond				expr					"-R '143.127.10.0/23'"	[OR]
+	RewriteCond				expr					"-R '143.127.100.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.102.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.103.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.119.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.136.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.138.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.139.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.14.0/23'"	[OR]
+	RewriteCond				expr					"-R '143.127.2.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.241.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.242.0/23'"	[OR]
+	RewriteCond				expr					"-R '143.127.87.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.89.0/24'"	[OR]
+	RewriteCond				expr					"-R '143.127.93.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.105.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.138.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.16.0/23'"	[OR]
+	RewriteCond				expr					"-R '155.64.23.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.38.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.40.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.49.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.56.0/24'"	[OR]
+	RewriteCond				expr					"-R '155.64.63.0/24'"	[OR]
+	RewriteCond				expr					"-R '166.98.152.0/23'"	[OR]
+	RewriteCond				expr					"-R '166.98.242.0/23'"	[OR]
+	RewriteCond				expr					"-R '166.98.38.0/24'"	[OR]
+	RewriteCond				expr					"-R '166.98.67.0/24'"	[OR]
+	RewriteCond				expr					"-R '166.98.71.0/24'"	[OR]
+	RewriteCond				expr					"-R '198.6.32.0/20'"	[OR]
+	RewriteCond				expr					"-R '198.6.32.0/24'"	[OR]
+	RewriteCond				expr					"-R '198.6.34.0/24'"	[OR]
+	RewriteCond				expr					"-R '198.6.62.0/24'"	[OR]
+	RewriteCond				expr					"-R '216.10.192.0/20'"	[OR]
+	RewriteCond				expr					"-R '216.10.193.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+	
+	# Barracuda
+    	RewriteCond			        expr			                "-R '64.235.144.0/24'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+	
+	# Slack Bot
+    	RewriteCond                             %{HTTP_USER_AGENT}                      ^Slackbot-LinkExpanding.*$
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+	
+	# @curi0usJack IP Count:         150
+	# @curi0usJack User Agent Count: 1
+
+
+	# IPs obtained via Malware Kit's and other sources: 20231009-14:10:44
+	RewriteCond				expr					"-R '89.207.18.182/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.147/22'"	[OR]
+	RewriteCond				expr					"-R '149.3.176.145/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.156.128/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.125/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.120/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.102/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.95/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.94/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.91/22'"	[OR]
+	RewriteCond				expr					"-R '173.0.88.2/22'"	[OR]
+	RewriteCond				expr					"-R '173.0.84.2/22'"	[OR]
+	RewriteCond				expr					"-R '173.0.84.34/22'"	[OR]
+	RewriteCond				expr					"-R '173.0.88.34/22'"	[OR]
+	RewriteCond				expr					"-R '2.20.6.85/22'"	[OR]
+	RewriteCond				expr					"-R '63.245.213.92/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.106/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.99/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.103/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.104/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.105/22'"	[OR]
+	RewriteCond				expr					"-R '63.245.217.20/22'"	[OR]
+	RewriteCond				expr					"-R '64.62.203.172/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.113/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.138/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.139/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.100/22'"	[OR]
+	RewriteCond				expr					"-R '173.194.69.101/22'"	[OR]
+	RewriteCond				expr					"-R '63.245.217.71/22'"	[OR]
+	RewriteCond				expr					"-R '188.112.175.207/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.139.166/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.138.2/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.138.59/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.139.153/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.139.152/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.138.44/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.139.118/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.138.18/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.139.121/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.138.19/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.134.160/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.8/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.52/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.33/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.132.152/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.62/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.132.232/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.132.118/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.11/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.132.121/22'"	[OR]
+	RewriteCond				expr					"-R '66.235.133.14/22'"	[OR]
+	RewriteCond				expr					"-R '195.214.79.0/24'"	[OR]
+	RewriteCond				expr					"-R '104.236.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '107.170.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.71.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.102.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '157.55.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '105.107.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.74.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '198.186.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '109.186.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '12.148.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '128.242.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '131.212.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '149.20.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '158.108.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '163.195.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '167.24.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '168.188.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '173.194.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '173.224.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '184.173.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '192.115.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '192.118.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '193.220.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '193.253.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '193.47.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '194.52.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '194.72.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '194.90.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '198.25.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '198.54.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '199.30.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '202.108.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '204.14.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '206.28.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '207.126.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '208.65.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '208.91.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '209.73.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '209.85.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '212.143.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '212.150.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '212.235.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '212.29.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '212.50.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '216.10.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '216.239.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '216.252.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '217.132.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '38.100.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '38.105.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '38.144.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '46.116.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '50.7.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '50.97.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '54.176.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '62.116.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '62.90.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.106.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.124.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.18.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.233.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.27.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.37.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '64.62.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.135.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.150.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.205.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.207.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.221.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '66.249.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '67.15.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '67.209.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '68.65.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '69.61.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '69.65.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '72.14.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '74.125.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '81.161.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '82.166.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '85.250.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '85.64.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '89.138.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '91.103.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '93.172.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '95.76.0.0/16'"	[OR]
+	RewriteCond				expr					"-R '4.14.64.0/24'"	[OR]
+	# IP Count: 138
+
+	# Add RewriteRule for performance
+	RewriteCond				expr					"-R '192.168.250.250'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	# Hostnames obtained via Malware Kit's and other sources: 20231009-14:10:44
+	RewriteCond				%{HTTP_HOST}					^.*google\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*paypal\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*112\.2o7\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*firefox\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*apple\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*clean-mx\.de$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*phishmongers\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*phishtank\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*\.google\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*dnblead\.com$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*static\.spro\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*sucuri\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*rima-tde\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*tfbnw\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*pacbell\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*tpnet\.pl$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*ovh\.net$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*above.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*google.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*softlayer.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*amazonaws.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*cyveillance.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*phishtank.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*dreamhost.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*netpilot.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*calyxinstitute.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*tor-exit.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*tor-node.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*msnbot.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*p3pwgdsn.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*netcraft.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*trendmicro.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*ebay.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*paypal.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*torservers.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*comodo.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*crawl.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*crawler.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*proxy.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*cloudflare.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*yahoo.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*trustwave.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*centralnic.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*badware.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*phishing.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*antivirus.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*SiteAdvisor.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*McAfee.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*Bitdefender.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*avirasoft.*$	[OR,NC]
+	RewriteCond				%{HTTP_HOST}					^.*googleusercontent.*$	[OR,NC]
+	# Hostname Count: 51
+
+	# Add RewriteRule for performance
+	RewriteCond				expr					"-R '192.168.250.250'"
+	RewriteRule				^.*$					${REDIR_TARGET}	[L,R=302]
+
+
+	# Redirect a file/path to a target backend file/path
+	# -> Example: Redirect displayed path to raw path to grab 'example.zip'
+	# -> Note: This should come after all IP/Host/User-Agent blacklisting
+
+	# RewriteRule				^/test/files/example.zip(.*)$		/example.zip	[L,R=302]
+
+
+	# Redirect and proxy a file/path to another system's file/path
+	# -> Example: Redirect and proxy displayed path to another system via the same path
+	# -> Note: You can also specify the URI explicitly as needed
+	# -> Note: This should come after all IP/Host/User-Agent blacklisting
+
+	# RewriteRule				^/test/files/example.zip(.*)$		https://192.168.10.10%{REQUEST_URI}	[P]
+
+
+	# Catch-all redirect
+	# -> Example: Catch anything other than '/example.zip' and redirect
+	# -> Note: This should be the last item in the redirect.rules file as a final catch-all
+
+	# RewriteRule				^((?!\/example\.zip).)*$		${REDIR_TARGET}	[L,R=302]
+
+
+	#
+	# The following data groups were excluded:
+	#	dynamic
+	#	asn
+	#	radb
+	#	bgpview
+	#	oracle
+	#	oraclecloud
+	#	azure
+	#	office365
+	#	google
+	#	googlecloud
+	#	microsoft
+	#	aws
+	#	amazon
+	#	tor
+	#	misc
+	#	user-agents
+
+	# The following explicit values were commented out:
+	#	AS#
+	#	hostname
