@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
     #> ----------------------------------------------------------------------------
     # Initialize redirect.rules file
-    WORKINGNGINXFILE.write(f'# Generated on {datetime.now().strftime("%Y:%m:%d")}\n')
+    WORKINGNGINXFILE.write(f'# Generated on {datetime.now().strftime("%Y-%m-%d")}\n')
     WORKINGNGINXFILE.write("# with https://github.com/Fudgedotdotdot/redirect.rules, forked for nginx use from https://github.com/0xZDH/redirect.rules\n")
 
     #> -----------------------------------------------------------------------------
@@ -530,20 +530,37 @@ if __name__ == '__main__':
     FULL_FILTERED_IP_LIST = "\n".join(list(map(lambda i: "\t" + i + " 1 ;", tmp_calc_ip_set)))
 
 
+    # This is horrible. we should use templating like sephiroth
     WORKINGNGINXFILE.write("geo $block_ip {\n")
     WORKINGNGINXFILE.write("\tdefault 0;\n")
     WORKINGNGINXFILE.write(f"{FULL_FILTERED_IP_LIST}\n")
-    WORKINGNGINXFILE.write("}")
+    WORKINGNGINXFILE.write("}\n")
+
+    FULL_AGENT_LIST_CLEANED = []
+    remove_regex = ['^.*', '.*$', '^']
+    for ua in FULL_AGENT_LIST:
+        for char in remove_regex:
+            ua = ua.replace(char, '')
+        FULL_AGENT_LIST_CLEANED.append(ua)
+    FULL_AGENT_LIST_CLEANED = "\n".join(list(map(lambda i: "\t ~*" + i + " 1 ;", FULL_AGENT_LIST_CLEANED)))
+    
+    WORKINGNGINXFILE.write("map $http_user_agent $ua_redirect {\n")
+    WORKINGNGINXFILE.write("\tdefault 0;\n")
+    WORKINGNGINXFILE.write(f"{FULL_AGENT_LIST_CLEANED}\n")
+    WORKINGNGINXFILE.write("}\n")
     WORKINGNGINXFILE.close()
+     
+    
     WORKINGFILE.close() # also close this, the file is used by sources
 
 
     # Use a little more bash for counting conditions created
-    #command = 'grep -c "RewriteCond" %s | grep -v "#"' % WORKINGFILE_NAME
-    #result  = subprocess.check_output(command, shell=True).decode('utf-8')
-    #result  = int(result.strip())
-    #print("\n[+]\tTotal IPs, Networks or User-Agents blocked: %d" % result)
-    #print("[+]\tRedirect rules file: %s" % WORKINGFILE_NAME)
+    command = 'grep -c "1 ;" %s' % WORKINGNGINX_NAME
+    result  = subprocess.check_output(command, shell=True).decode('utf-8')
+    result  = int(result.strip())
+    print("\n[+]\tTotal IPs, Networks or User-Agents blocked: %d" % result)
+    
+    print("[+]\tRedirect rules file: %s" % WORKINGNGINX_NAME)
 
     elapsed = time.perf_counter() - start
     print(f"\n{__file__} executed in {elapsed:0.2f} seconds.")
